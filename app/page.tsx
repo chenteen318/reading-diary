@@ -12,7 +12,7 @@ export default function HomePage() {
           <span style={styles.highlight}>reading moments</span>
         </h1>
         <p style={styles.subtitle}>
-          Turn your favorite book passages and cover art into a warm, 
+          Turn your favorite book passages and cover art into a warm,
           antique-styled diary that preserves your reading journey.
         </p>
         <div style={styles.actions}>
@@ -24,7 +24,7 @@ export default function HomePage() {
           </Link>
         </div>
       </div>
-      
+
       <div style={styles.features}>
         <div style={styles.featureCard}>
           <div style={styles.featureIcon}>📷</div>
@@ -52,14 +52,14 @@ export default function HomePage() {
   );
 }
 
-const styles = {
+const styles: { [key: string]: React.CSSProperties } = {
   container: {
     maxWidth: '1000px',
     margin: '0 auto',
     padding: '48px 24px',
   },
   hero: {
-    textAlign: 'center' as const,
+    textAlign: 'center',
     marginBottom: '64px',
   },
   badge: {
@@ -96,7 +96,61 @@ const styles = {
     display: 'flex',
     gap: '16px',
     justifyContent: 'center',
-    flexWrap: 'wrap' as const,
+    flexWrap: 'wrap',
   },
-  // ...other styles
+  primaryButton: {
+    display: 'inline-block',
+    backgroundColor: '#8B4513',
+    color: '#FFFDF8',
+    fontFamily: "'Source Sans 3', sans-serif",
+    fontSize: '16px',
+    fontWeight: 600,
+    padding: '14px 28px',
+    borderRadius: '4px',
+    textDecoration: 'none',
+    transition: 'background-color 200ms ease-out',
+  },
+  secondaryButton: {
+    display: 'inline-block',
+    backgroundColor: 'transparent',
+    color: '#8B4513',
+    fontFamily: "'Source Sans 3', sans-serif",
+    fontSize: '16px',
+    fontWeight: 600,
+    padding: '14px 28px',
+    borderRadius: '4px',
+    border: '2px solid #8B4513',
+    textDecoration: 'none',
+    transition: 'all 200ms ease-out',
+  },
+  features: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: '24px',
+  },
+  featureCard: {
+    backgroundColor: '#FFFDF8',
+    border: '1px solid #E0D5C5',
+    borderRadius: '8px',
+    padding: '32px 24px',
+    textAlign: 'center',
+    boxShadow: '0 2px 8px rgba(61, 41, 20, 0.08)',
+  },
+  featureIcon: {
+    fontSize: '40px',
+    marginBottom: '16px',
+  },
+  featureTitle: {
+    fontFamily: "'Playfair Display', serif",
+    fontSize: '20px',
+    fontWeight: 600,
+    color: '#3D2914',
+    marginBottom: '8px',
+  },
+  featureText: {
+    fontFamily: "'Crimson Text', serif",
+    fontSize: '17px',
+    color: '#7A6555',
+    lineHeight: 1.6,
+  },
 };
