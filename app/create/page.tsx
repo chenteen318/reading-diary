@@ -84,14 +84,14 @@ export default function CreateEntryPage() {
   const imageStyle = showOriginal ? {} : { filter: antiqueFilter };
 
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <h1 style={styles.title}>Create New Entry</h1>
       <p style={styles.subtitle}>Capture a reading moment</p>
 
       <form onSubmit={handleSubmit} style={styles.form}>
-        <div style={styles.row}>
+        <div className="form-row">
           {/* Image Upload Section */}
-          <div style={styles.imageSection}>
+          <div className="form-image-col">
             <div style={styles.uploadZone} onClick={() => pageInputRef.current?.click()}>
               {previewImage ? (
                 <div style={styles.previewContainer}>
@@ -157,7 +157,7 @@ export default function CreateEntryPage() {
           </div>
 
           {/* Details Section */}
-          <div style={styles.detailsSection}>
+          <div className="form-details-col">
             <div style={styles.field}>
               <label style={styles.label}>Book Title</label>
               <input
@@ -221,7 +221,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     maxWidth: '820px',
     margin: '0 auto',
-    padding: '48px 24px',
   },
   title: {
     fontFamily: "'Playfair Display', serif",
@@ -242,25 +241,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: '16px',
     padding: '32px',
     boxShadow: '0 2px 8px rgba(61,41,20,0.08)',
-  },
-  row: {
-    display: 'flex',
-    gap: '32px',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-  },
-  imageSection: {
-    flex: '0 0 260px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
-  },
-  detailsSection: {
-    flex: 1,
-    minWidth: '240px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
   },
   uploadZone: {
     border: '2px dashed #D4A574',

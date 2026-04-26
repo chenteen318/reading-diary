@@ -30,7 +30,7 @@ export default function EntryDetailPage() {
 
   if (!entry) {
     return (
-      <div style={styles.container}>
+      <div className="page-container" style={styles.container}>
         <p style={styles.loading}>Loading...</p>
       </div>
     );
@@ -48,14 +48,14 @@ export default function EntryDetailPage() {
   const coverImageStyle: React.CSSProperties = showCoverOriginal ? {} : { filter: antiqueFilter };
 
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <Link href="/diary" style={styles.backLink}>
         ← Back to Diary
       </Link>
 
-      <div style={styles.content}>
+      <div className="entry-layout">
         {/* Main Image */}
-        <div style={styles.imageSection}>
+        <div className="entry-image-col">
           {displayPageImage ? (
             <div style={styles.mainImageWrapper}>
               <img
@@ -95,7 +95,7 @@ export default function EntryDetailPage() {
         </div>
 
         {/* Details Section */}
-        <div style={styles.detailsSection}>
+        <div className="entry-details-col">
           <div style={styles.meta}>
             <h1 style={styles.bookTitle}>{entry.bookTitle}</h1>
             <p style={styles.author}>by {entry.author}</p>
@@ -145,7 +145,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     maxWidth: '900px',
     margin: '0 auto',
-    padding: '40px 24px',
   },
   loading: {
     fontFamily: "'Crimson Text', serif",
@@ -162,18 +161,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#8B4513',
     textDecoration: 'none',
     marginBottom: '32px',
-  },
-  content: {
-    display: 'flex',
-    gap: '40px',
-    alignItems: 'flex-start',
-    flexWrap: 'wrap',
-  },
-  imageSection: {
-    flex: '0 0 320px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px',
   },
   mainImageWrapper: {
     borderRadius: '8px',
@@ -243,13 +230,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '12px',
     color: '#8B4513',
     cursor: 'pointer',
-  },
-  detailsSection: {
-    flex: 1,
-    minWidth: '260px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '28px',
   },
   meta: {
     borderBottom: '1px solid #E0D5C5',

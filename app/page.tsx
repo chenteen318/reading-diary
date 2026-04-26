@@ -4,10 +4,10 @@ import Link from 'next/link';
 
 export default function HomePage() {
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <div style={styles.hero}>
         <div style={styles.badge}>📚 Your Personal Reading Journal</div>
-        <h1 style={styles.title}>
+        <h1 className="hero-title-rwd" style={styles.title}>
           Capture meaningful<br />
           <span style={styles.highlight}>reading moments</span>
         </h1>
@@ -56,7 +56,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     maxWidth: '1000px',
     margin: '0 auto',
-    padding: '48px 24px',
   },
   hero: {
     textAlign: 'center',
@@ -75,7 +74,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   title: {
     fontFamily: "'Playfair Display', serif",
-    fontSize: '56px',
     fontWeight: 700,
     color: '#3D2914',
     lineHeight: 1.2,

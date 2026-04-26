@@ -14,11 +14,11 @@ export function Navigation() {
 
   return (
     <nav style={styles.nav}>
-      <div style={styles.container}>
+      <div className="nav-inner">
         <Link href="/" style={styles.logo}>
           📖 Reading Diary
         </Link>
-        <div style={styles.links}>
+        <div className="nav-links-list">
           {links.map(link => (
             <Link
               key={link.href}

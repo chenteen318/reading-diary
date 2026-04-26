@@ -18,14 +18,14 @@ export default function DiaryPage() {
 
   if (loading) {
     return (
-      <div style={styles.container}>
+      <div className="page-container" style={styles.container}>
         <p style={styles.loading}>Loading your diary...</p>
       </div>
     );
   }
 
   return (
-    <div style={styles.container}>
+    <div className="page-container" style={styles.container}>
       <div style={styles.header}>
         <div>
           <h1 style={styles.title}>My Diary</h1>
@@ -99,7 +99,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   container: {
     maxWidth: '1200px',
     margin: '0 auto',
-    padding: '48px 24px',
   },
   loading: {
     fontFamily: "'Crimson Text', serif",
