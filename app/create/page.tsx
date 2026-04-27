@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ReadingEntry } from '@/lib/types';
 import { saveEntry, generateId } from '@/lib/storage';
@@ -19,8 +19,28 @@ export default function CreateEntryPage() {
   const [tags, setTags] = useState('');
   const [showOriginal, setShowOriginal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [isDetecting, setIsDetecting] = useState(false);
+  const [isLookingUp, setIsLookingUp] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // Auto-fill author when book title is typed (debounced)
+  useEffect(() => {
+    if (!bookTitle.trim() || bookTitle.trim().length < 3) return;
+    const timer = setTimeout(async () => {
+      setIsLookingUp(true);
+      try {
+        const res = await fetch(`/api/extract-book-info?title=${encodeURIComponent(bookTitle)}`);
+        if (res.ok) {
+          const { author: foundAuthor } = await res.json();
+          if (foundAuthor) setAuthor(prev => prev || foundAuthor);
+        }
+      } catch {
+        // silently ignore
+      } finally {
+        setIsLookingUp(false);
+      }
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [bookTitle]);
 
   const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -45,27 +65,6 @@ export default function CreateEntryPage() {
         setErrors(prev => ({ ...prev, page: '' }));
       }
 
-      // Auto-detect book info from the image
-      setIsDetecting(true);
-      try {
-        const res = await fetch('/api/extract-book-info', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64: base64, mediaType: 'image/jpeg' }),
-        });
-        const json = await res.json();
-        if (res.ok) {
-          if (json.title) setBookTitle(prev => prev || json.title);
-          if (json.author) setAuthor(prev => prev || json.author);
-        } else {
-          setErrors(prev => ({ ...prev, detect: `Detection failed: ${json.error || ''} ${json.detail || ''}` }));
-        }
-      } catch (e: unknown) {
-        const msg = e instanceof Error ? e.message : String(e);
-        setErrors(prev => ({ ...prev, detect: `Detection error: ${msg}` }));
-      } finally {
-        setIsDetecting(false);
-      }
     } catch {
       setErrors(prev => ({ ...prev, [type]: 'Failed to load image' }));
     }
@@ -189,22 +188,14 @@ export default function CreateEntryPage() {
 
           {/* Details Section */}
           <div className="form-details-col">
-            {isDetecting && (
-              <p style={styles.detecting}>✨ Detecting book info from photo...</p>
-            )}
-            {errors.detect && (
-              <p style={styles.error}>{errors.detect}</p>
-            )}
-
             <div style={styles.field}>
               <label style={styles.label}>Book Title</label>
               <input
                 type="text"
                 value={bookTitle}
                 onChange={e => setBookTitle(e.target.value)}
-                placeholder={isDetecting ? 'Detecting...' : 'e.g. The Great Gatsby'}
+                placeholder="e.g. The Great Gatsby"
                 style={styles.input}
-                disabled={isDetecting}
               />
             </div>
 
@@ -214,10 +205,11 @@ export default function CreateEntryPage() {
                 type="text"
                 value={author}
                 onChange={e => setAuthor(e.target.value)}
-                placeholder={isDetecting ? 'Detecting...' : 'e.g. F. Scott Fitzgerald'}
+                placeholder={isLookingUp ? 'Looking up author...' : 'e.g. F. Scott Fitzgerald'}
                 style={styles.input}
-                disabled={isDetecting}
+                disabled={isLookingUp}
               />
+              {isLookingUp && <p style={styles.detecting}>🔍 Finding author...</p>}
             </div>
 
             <div style={styles.field}>
