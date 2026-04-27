@@ -11,9 +11,14 @@ export default function DiaryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const data = getDiaryData();
-    setEntries(data.entries);
-    setLoading(false);
+    try {
+      const data = getDiaryData();
+      setEntries(data.entries);
+    } catch {
+      setEntries([]);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   if (loading) {
