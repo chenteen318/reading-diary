@@ -98,8 +98,9 @@ export default function CreateEntryPage() {
         pageImage
       );
       router.push('/diary');
-    } catch {
-      setErrors({ save: 'Failed to save entry. Please try again.' });
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : JSON.stringify(err);
+      setErrors({ save: `Failed to save: ${msg}` });
       setIsSaving(false);
     }
   };
