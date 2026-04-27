@@ -51,7 +51,7 @@ export default function CreateEntryPage() {
         const res = await fetch('/api/extract-book-info', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ imageBase64: base64, mediaType: file.type }),
+          body: JSON.stringify({ imageBase64: base64, mediaType: 'image/jpeg' }),
         });
         if (res.ok) {
           const { title, author } = await res.json();

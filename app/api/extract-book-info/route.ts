@@ -43,8 +43,9 @@ export async function POST(req: NextRequest) {
 
     const result = JSON.parse(jsonMatch[0]);
     return NextResponse.json({ title: result.title || '', author: result.author || '' });
-  } catch (err) {
-    console.error('extract-book-info error:', err);
-    return NextResponse.json({ error: 'Failed to extract book info' }, { status: 500 });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('extract-book-info error:', message);
+    return NextResponse.json({ error: 'Failed to extract book info', detail: message }, { status: 500 });
   }
 }
