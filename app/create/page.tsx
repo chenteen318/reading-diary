@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { ReadingEntry } from '@/lib/types';
 import { saveEntry, generateId } from '@/lib/storage';
-import { fileToBase64, validateImage, antiqueFilter } from '@/lib/imageUtils';
+import { compressImage, validateImage, antiqueFilter } from '@/lib/imageUtils';
 
 export default function CreateEntryPage() {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function CreateEntryPage() {
     }
 
     try {
-      const base64 = await fileToBase64(file);
+      const base64 = await compressImage(file);
       if (type === 'cover') {
         setCoverImage(base64);
         setErrors(prev => ({ ...prev, cover: '' }));
@@ -102,7 +102,7 @@ export default function CreateEntryPage() {
     } catch (err) {
       const isQuota = err instanceof DOMException && err.name === 'QuotaExceededError';
       setErrors({ save: isQuota
-        ? 'Storage is full. Try using smaller images (under 1MB each).'
+        ? 'Your diary is full. Please delete some old entries to make room.'
         : 'Failed to save entry. Please try again.' });
       setIsSaving(false);
     }
