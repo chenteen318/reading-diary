@@ -76,8 +76,16 @@ export default function CreateEntryPage() {
       updatedAt: new Date().toISOString(),
     };
 
-    saveEntry(entry);
-    router.push('/diary');
+    try {
+      saveEntry(entry);
+      router.push('/diary');
+    } catch (err) {
+      const isQuota = err instanceof DOMException && err.name === 'QuotaExceededError';
+      setErrors({ save: isQuota
+        ? 'Storage is full. Try using smaller images (under 1MB each).'
+        : 'Failed to save entry. Please try again.' });
+      setIsSaving(false);
+    }
   };
 
   const previewImage = pageImage || coverImage;
@@ -203,6 +211,7 @@ export default function CreateEntryPage() {
               />
             </div>
 
+            {errors.save && <p style={styles.error}>{errors.save}</p>}
             <button
               type="submit"
               disabled={isSaving}
