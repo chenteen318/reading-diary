@@ -19,6 +19,7 @@ export default function CreateEntryPage() {
   const [tags, setTags] = useState('');
   const [showOriginal, setShowOriginal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDetecting, setIsDetecting] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleImageUpload = async (
@@ -42,6 +43,25 @@ export default function CreateEntryPage() {
       } else {
         setPageImage(base64);
         setErrors(prev => ({ ...prev, page: '' }));
+      }
+
+      // Auto-detect book info from the image
+      setIsDetecting(true);
+      try {
+        const res = await fetch('/api/extract-book-info', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ imageBase64: base64, mediaType: file.type }),
+        });
+        if (res.ok) {
+          const { title, author } = await res.json();
+          if (title) setBookTitle(prev => prev || title);
+          if (author) setAuthor(prev => prev || author);
+        }
+      } catch {
+        // Detection failed silently — user can fill in manually
+      } finally {
+        setIsDetecting(false);
       }
     } catch {
       setErrors(prev => ({ ...prev, [type]: 'Failed to load image' }));
@@ -166,14 +186,19 @@ export default function CreateEntryPage() {
 
           {/* Details Section */}
           <div className="form-details-col">
+            {isDetecting && (
+              <p style={styles.detecting}>✨ Detecting book info from photo...</p>
+            )}
+
             <div style={styles.field}>
               <label style={styles.label}>Book Title</label>
               <input
                 type="text"
                 value={bookTitle}
                 onChange={e => setBookTitle(e.target.value)}
-                placeholder="e.g. The Great Gatsby"
+                placeholder={isDetecting ? 'Detecting...' : 'e.g. The Great Gatsby'}
                 style={styles.input}
+                disabled={isDetecting}
               />
             </div>
 
@@ -183,8 +208,9 @@ export default function CreateEntryPage() {
                 type="text"
                 value={author}
                 onChange={e => setAuthor(e.target.value)}
-                placeholder="e.g. F. Scott Fitzgerald"
+                placeholder={isDetecting ? 'Detecting...' : 'e.g. F. Scott Fitzgerald'}
                 style={styles.input}
+                disabled={isDetecting}
               />
             </div>
 
@@ -316,6 +342,12 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontSize: '13px',
     color: '#8B4513',
     cursor: 'pointer',
+  },
+  detecting: {
+    fontFamily: "'Source Sans 3', sans-serif",
+    fontSize: '13px',
+    color: '#8B4513',
+    fontStyle: 'italic',
   },
   field: {
     display: 'flex',
