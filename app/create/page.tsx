@@ -53,13 +53,16 @@ export default function CreateEntryPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ imageBase64: base64, mediaType: 'image/jpeg' }),
         });
+        const json = await res.json();
         if (res.ok) {
-          const { title, author } = await res.json();
-          if (title) setBookTitle(prev => prev || title);
-          if (author) setAuthor(prev => prev || author);
+          if (json.title) setBookTitle(prev => prev || json.title);
+          if (json.author) setAuthor(prev => prev || json.author);
+        } else {
+          setErrors(prev => ({ ...prev, detect: `Detection failed: ${json.error || ''} ${json.detail || ''}` }));
         }
-      } catch {
-        // Detection failed silently — user can fill in manually
+      } catch (e: unknown) {
+        const msg = e instanceof Error ? e.message : String(e);
+        setErrors(prev => ({ ...prev, detect: `Detection error: ${msg}` }));
       } finally {
         setIsDetecting(false);
       }
@@ -188,6 +191,9 @@ export default function CreateEntryPage() {
           <div className="form-details-col">
             {isDetecting && (
               <p style={styles.detecting}>✨ Detecting book info from photo...</p>
+            )}
+            {errors.detect && (
+              <p style={styles.error}>{errors.detect}</p>
             )}
 
             <div style={styles.field}>
