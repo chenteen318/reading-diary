@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ReadingEntry } from '@/lib/types';
-import { saveEntry, generateId } from '@/lib/storage';
+import { generateId, saveEntry } from '@/lib/storage';
 import { compressImage, validateImage, antiqueFilter } from '@/lib/imageUtils';
 
 export default function CreateEntryPage() {
@@ -84,28 +83,23 @@ export default function CreateEntryPage() {
 
     setIsSaving(true);
 
-    const entry: ReadingEntry = {
-      id: generateId(),
-      bookTitle: bookTitle.trim() || 'Untitled',
-      author: author.trim() || 'Unknown Author',
-      thought: thought.trim(),
-      tags: tags.split(',').map(t => t.trim()).filter(Boolean),
-      coverImage: coverImage || '',
-      pageImage: pageImage || '',
-      styledCoverImage: coverImage || '',
-      styledPageImage: pageImage || '',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
     try {
-      saveEntry(entry);
+      await saveEntry(
+        {
+          id: generateId(),
+          bookTitle: bookTitle.trim() || 'Untitled',
+          author: author.trim() || 'Unknown Author',
+          thought: thought.trim(),
+          tags: tags.split(',').map(t => t.trim()).filter(Boolean),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        coverImage,
+        pageImage
+      );
       router.push('/diary');
-    } catch (err) {
-      const isQuota = err instanceof DOMException && err.name === 'QuotaExceededError';
-      setErrors({ save: isQuota
-        ? 'Your diary is full. Please delete some old entries to make room.'
-        : 'Failed to save entry. Please try again.' });
+    } catch {
+      setErrors({ save: 'Failed to save entry. Please try again.' });
       setIsSaving(false);
     }
   };

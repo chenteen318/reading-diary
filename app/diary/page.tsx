@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ReadingEntry } from '@/lib/types';
-import { getDiaryData } from '@/lib/storage';
+import { getDiaryEntries } from '@/lib/storage';
 import { antiqueFilter } from '@/lib/imageUtils';
 
 export default function DiaryPage() {
@@ -11,14 +11,10 @@ export default function DiaryPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const data = getDiaryData();
-      setEntries(data.entries);
-    } catch {
-      setEntries([]);
-    } finally {
-      setLoading(false);
-    }
+    getDiaryEntries()
+      .then(data => setEntries(data))
+      .catch(() => setEntries([]))
+      .finally(() => setLoading(false));
   }, []);
 
   if (loading) {

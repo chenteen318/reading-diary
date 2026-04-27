@@ -16,14 +16,15 @@ export default function EntryDetailPage() {
 
   useEffect(() => {
     if (params.id) {
-      const found = getEntry(params.id as string);
-      setEntry(found);
+      getEntry(params.id as string)
+        .then(found => setEntry(found))
+        .catch(() => setEntry(null));
     }
   }, [params.id]);
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (entry && confirm('Are you sure you want to delete this entry?')) {
-      deleteEntry(entry.id);
+      await deleteEntry(entry.id);
       router.push('/diary');
     }
   };
